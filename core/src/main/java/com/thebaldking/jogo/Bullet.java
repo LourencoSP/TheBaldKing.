@@ -23,6 +23,7 @@ public class Bullet {
     }
 
     public boolean isOutOfBounds() {
+
         return bounds.x < 0 || bounds.x > 800 || bounds.y < 0 || bounds.y > 600;
     }
 }

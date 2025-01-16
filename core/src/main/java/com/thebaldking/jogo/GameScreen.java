@@ -29,7 +29,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         // Limpa a tela com uma cor de fundo
-        Gdx.gl.glClearColor(0, 0, 0, 1); // Preto
+        Gdx.gl.glClearColor(0.94f, 0.9f, 0.55f, 1); // Areia
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Atualize a lógica do jogo aqui, se necessário
@@ -67,7 +67,3 @@ public class GameScreen implements Screen {
         playerTexture.dispose();
     }
 }
-
-
-
-

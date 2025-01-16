@@ -29,6 +29,12 @@ public class Player {
         if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) bullets.add(new Bullet(playerBounds.x + 10, playerBounds.y - 10, 0, -300));
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) bullets.add(new Bullet(playerBounds.x - 10, playerBounds.y + 10, -300, 0));
         if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) bullets.add(new Bullet(playerBounds.x + 30, playerBounds.y + 10, 300, 0));
+        if (Gdx.input.isKeyJustPressed (Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.UP)) bullets.add(new Bullet(playerBounds.x - 10, playerBounds.y + 30, -300, 300));
+        if (Gdx.input.isKeyJustPressed (Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.DOWN)) bullets.add(new Bullet(playerBounds.x -10, playerBounds.y - 5, -300, -300));
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)&& Gdx.input.isKeyPressed(Input.Keys.UP)) bullets.add(new Bullet(playerBounds.x + 30, playerBounds.y + 30, + 300, + 300));
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && Gdx.input.isKeyPressed(Input.Keys.DOWN)) bullets.add(new Bullet(playerBounds.x + 30, playerBounds.y - 5, + 300, - 300));
+
+
 
         // Atualiza os tiros
         Iterator<Bullet> iterator = bullets.iterator();

@@ -55,5 +55,3 @@ public class GameCore extends ApplicationAdapter {
         return batch; // Permite acessar o batch de fora da classe
     }
 }
-
-
