@@ -24,6 +24,7 @@ public class Player {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) playerBounds.x -= speed * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) playerBounds.x += speed * delta;
 
+
         // Atirar (setas)
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) bullets.add(new Bullet(playerBounds.x + 10, playerBounds.y + 30, 0, 300));
         if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) bullets.add(new Bullet(playerBounds.x + 10, playerBounds.y - 10, 0, -300));
@@ -33,7 +34,6 @@ public class Player {
         if (Gdx.input.isKeyJustPressed (Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.DOWN)) bullets.add(new Bullet(playerBounds.x -10, playerBounds.y - 5, -300, -300));
         if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)&& Gdx.input.isKeyPressed(Input.Keys.UP)) bullets.add(new Bullet(playerBounds.x + 30, playerBounds.y + 30, + 300, + 300));
         if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && Gdx.input.isKeyPressed(Input.Keys.DOWN)) bullets.add(new Bullet(playerBounds.x + 30, playerBounds.y - 5, + 300, - 300));
-
 
 
         // Atualiza os tiros
@@ -56,5 +56,14 @@ public class Player {
             bullet.render(shapeRenderer);
         }
     }
+
+    public float getX() {
+        return playerBounds.x;
+    }
+
+    public float getY() {
+        return playerBounds.y;
+    }
 }
+
 

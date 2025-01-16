@@ -25,7 +25,7 @@ public class Lwjgl3Launcher {
 
         configuration.setResizable(false);
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
-        new Lwjgl3Application(new GameCore(), configuration);
-        return configuration;
+        return configuration; // Remove the extra instantiation here
     }
 }
+

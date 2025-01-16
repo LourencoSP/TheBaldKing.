@@ -1,4 +1,5 @@
-package com.thebaldking.jogo;
+
+/*package com.thebaldking.jogo;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,22 +21,22 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // Inicialize os elementos do jogo aqui (jogador, inimigos, mapa, etc.)
-        playerTexture = new Texture("player.png"); // Certifique-se de que o arquivo "player.png" está no diretório assets
+
+        playerTexture = new Texture("player.png");
         playerX = 100; // Posição inicial do jogador no eixo X
         playerY = 100; // Posição inicial do jogador no eixo Y
     }
 
     @Override
     public void render(float delta) {
-        // Limpa a tela com uma cor de fundo
+
         Gdx.gl.glClearColor(0.94f, 0.9f, 0.55f, 1); // Areia
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Atualize a lógica do jogo aqui, se necessário
-        playerX += 50 * delta; // Exemplo: Move o jogador no eixo X
 
-        // Renderize os elementos do jogo
+        playerX += 50 * delta;
+
+
         batch.begin();
         batch.draw(playerTexture, playerX, playerY); // Renderiza o jogador na tela
         batch.end();
@@ -43,27 +44,119 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // Código para lidar com redimensionamento da tela, se necessário
+
     }
 
     @Override
     public void pause() {
-        // Código para pausar o jogo, se necessário
+
     }
 
     @Override
     public void resume() {
-        // Código para retomar o jogo, se necessário
+
     }
 
     @Override
     public void hide() {
-        // Código para ocultar elementos da tela, se necessário
+
     }
 
     @Override
     public void dispose() {
-        // Libere os recursos usados para evitar vazamentos de memória
+
         playerTexture.dispose();
     }
+}*/
+package com.thebaldking.jogo;
+
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
+import com.thebaldking.jogo.enemy.Enemy;
+
+import java.util.Iterator;
+
+public class GameScreen implements Screen {
+
+    private final GameCore game;
+    private SpriteBatch batch;
+    private Texture playerTexture;
+    private float playerX, playerY;
+    private Player player;
+    private EnemyFactory enemyFactory;
+    private Array<Enemy> enemies;
+    private float spawnTimer;
+
+    public GameScreen(GameCore game) {
+        this.game = game;
+        this.batch = game.getBatch();
+    }
+
+    @Override
+    public void show() {
+        player = new Player();
+        playerTexture = new Texture("player.png");
+        playerX = 100;
+        playerY = 100;
+
+        enemyFactory = new EnemyFactory();
+        enemies = new Array<>();
+        spawnTimer = 0;
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0.94f, 0.9f, 0.55f, 1); // Areia
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Atualiza o temporizador para gerar inimigos
+        spawnTimer += delta;
+        if (spawnTimer > 1) {
+            enemies.add(enemyFactory.createEnemy(player.getX(), player.getY()));
+            spawnTimer = 0;
+        }
+
+        // Atualiza o jogador (simples movimentação)
+        playerX += 50 * delta;
+
+        // Renderiza todos os elementos na tela
+        batch.begin();
+
+        // Renderiza os inimigos
+        for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
+            Enemy enemy = iterator.next();
+            enemy.update(delta, player.getX(), player.getY());
+            enemy.render(batch);
+        }
+
+        // Renderiza o jogador
+        batch.draw(playerTexture, playerX, playerY);
+
+        batch.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
+    public void hide() {}
+
+    @Override
+    public void dispose() {
+        playerTexture.dispose();
+        for (Enemy enemy : enemies) {
+            enemy.dispose();
+        }
+    }
 }
+
