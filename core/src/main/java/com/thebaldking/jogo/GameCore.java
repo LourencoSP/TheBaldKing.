@@ -1,75 +1,80 @@
 package com.thebaldking.jogo;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.thebaldking.jogo.enemy.Enemy;
+import com.badlogic.gdx.utils.Array;
+import java.util.Iterator;
+import com.thebaldking.jogo.Enemy;
 
 public class GameCore extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
-    public SpriteBatch batch; // Adicionado SpriteBatch
     private Player player;
-    private EnemyFactory enemyFactory; // Adiciona o EnemyFactory
-    private Array<Enemy> enemies; // Lista de inimigos
-    private float spawnTimer; // Temporizador para spawn de inimigos
+    private EnemyFactory enemyFactory;
+    private Array<Enemy> enemies;
+    private float spawnTimer;
 
     @Override
     public void create() {
         shapeRenderer = new ShapeRenderer();
-        batch = new SpriteBatch(); // Inicializa o SpriteBatch
         player = new Player();
-        enemyFactory = new EnemyFactory(); // Inicializa o EnemyFactory
-        enemies = new Array<>(); // Inicializa a lista de inimigos
-        spawnTimer = 0; // Inicializa o temporizador
+        enemyFactory = new EnemyFactory();
+        enemies = new Array<>();
+        spawnTimer = 0;
     }
 
     @Override
     public void render() {
         // Limpa a tela
-        Gdx.gl.glClearColor(0.94f, 0.9f, 0.55f, 1); // Areia
+        Gdx.gl.glClearColor(0.94f, 0.9f, 0.55f, 1); // Cor de fundo
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Atualiza o jogador
         player.update(Gdx.graphics.getDeltaTime());
 
-        // Atualiza o temporizador e gera inimigos
+        // Gerencia a criação de inimigos
         spawnTimer += Gdx.graphics.getDeltaTime();
-        if (spawnTimer > 2) { // Gera um inimigo a cada 2 segundos
-            enemies.add(enemyFactory.createEnemy(player.getX(), player.getY()));
-            spawnTimer = 0; // Reseta o temporizador
+        if (spawnTimer > 2) {
+            enemies.add(enemyFactory.createEnemy(player.getBounds().x, player.getBounds().y));
+            spawnTimer = 0;
         }
 
-        // Renderiza com ShapeRenderer
+        // Verifica colisão entre balas e inimigos
+        checkCollisions();
+
+        // Renderiza a tela
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        player.render(shapeRenderer);
-        shapeRenderer.end();
-
-        // Renderiza os inimigos com SpriteBatch
-        batch.begin();
+        player.render(shapeRenderer); // Renderiza o jogador
         for (Enemy enemy : enemies) {
-            enemy.update(Gdx.graphics.getDeltaTime(), player.getX(), player.getY());
-            enemy.render(batch); // Renderiza os inimigos
+            enemy.update(Gdx.graphics.getDeltaTime(), player.getBounds().x, player.getBounds().y); // Atualiza os inimigos
+            enemy.render(shapeRenderer); // Renderiza os inimigos
         }
-        batch.end();
+        shapeRenderer.end();
     }
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
-        batch.dispose(); // Libera os recursos do SpriteBatch
     }
 
-    public SpriteBatch getBatch() {
-        return batch; // Permite acessar o batch de fora da classe
+    private void checkCollisions() {
+        Iterator<Bullet> bulletIterator = player.getBulletManager().getBullets().iterator();
+
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            Iterator<Enemy> enemyIterator = enemies.iterator();
+
+            while (enemyIterator.hasNext()) {
+                Enemy enemy = enemyIterator.next();
+
+                // Verifica colisão entre a bala e o inimigo
+                if (bullet.getBounds().overlaps(enemy.getBounds())) {
+                    bulletIterator.remove(); // Remove a bala
+                    enemyIterator.remove();  // Remove o inimigo
+                    break; // Colisão detectada, não precisa verificar mais inimigos para essa bala
+                }
+            }
+        }
     }
 }
