@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import java.util.Iterator;
-import com.thebaldking.jogo.Enemy;
+import enemy.Enemy;
 
 public class GameCore extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
@@ -35,7 +35,7 @@ public class GameCore extends ApplicationAdapter {
 
         // Gerencia a criação de inimigos
         spawnTimer += Gdx.graphics.getDeltaTime();
-        if (spawnTimer > 2) {
+        if (spawnTimer > 1) {
             enemies.add(enemyFactory.createEnemy(player.getBounds().x, player.getBounds().y));
             spawnTimer = 0;
         }
@@ -59,6 +59,7 @@ public class GameCore extends ApplicationAdapter {
     }
 
     private void checkCollisions() {
+
         Iterator<Bullet> bulletIterator = player.getBulletManager().getBullets().iterator();
 
         while (bulletIterator.hasNext()) {
@@ -71,7 +72,8 @@ public class GameCore extends ApplicationAdapter {
                 // Verifica colisão entre a bala e o inimigo
                 if (bullet.getBounds().overlaps(enemy.getBounds())) {
                     bulletIterator.remove(); // Remove a bala
-                    enemyIterator.remove();  // Remove o inimigo
+                    enemyIterator.remove();// Remove o inimigo
+
                     break; // Colisão detectada, não precisa verificar mais inimigos para essa bala
                 }
             }

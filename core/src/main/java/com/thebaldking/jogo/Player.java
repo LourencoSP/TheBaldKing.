@@ -34,6 +34,7 @@ public class Player {
 
     public void render(ShapeRenderer shapeRenderer) {
         // Renderiza o jogador
+        shapeRenderer.setColor(1,1,1,1);
         shapeRenderer.rect(playerBounds.x, playerBounds.y, playerBounds.width, playerBounds.height);
 
         // Renderiza os tiros
