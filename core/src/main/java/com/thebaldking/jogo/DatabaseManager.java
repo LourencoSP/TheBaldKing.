@@ -7,8 +7,8 @@ import java.sql.SQLException;
 
 public class DatabaseManager {
     private static final String URL = "jdbc:mysql://localhost/the_bald_king";
-    private static final String USER = "root";         // Altere conforme sua configuração
-    private static final String PASSWORD = "password";   // Altere conforme sua configuração
+    private static final String USER = "root";
+    private static final String PASSWORD = "password";
 
     public static void saveScore(String playerName, int score) throws SQLException {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
