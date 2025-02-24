@@ -12,29 +12,18 @@ public class Collision {
     }
 
     public void move(float dx, float dy) {
-        this.x += dx;
-        this.y += dy;
+        x += dx;
+        y += dy;
     }
 
     public boolean collideWith(Collision other) {
-        return x < other.x + other.width && y < other.y + other.height &&
-            x + width > other.x && y + height > other.y;
+        return x < other.x + other.width && x + width > other.x &&
+            y < other.y + other.height && y + height > other.y;
     }
 
-    // Getters e Setters
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
+    // Getters
+    public float getX() { return x; }
+    public float getY() { return y; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
 }

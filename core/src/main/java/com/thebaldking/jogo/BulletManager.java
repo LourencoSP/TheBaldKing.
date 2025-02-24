@@ -21,7 +21,7 @@ public class BulletManager {
             Bullet bullet = iterator.next();
             bullet.update(delta);
             if (bullet.isOutOfBounds()) {
-                iterator.remove(); // Remove balas fora da tela
+                iterator.remove();
             }
         }
     }

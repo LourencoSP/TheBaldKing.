@@ -27,6 +27,7 @@ public class Bullet {
     }
 
     public boolean isOutOfBounds() {
+        // Considerando uma tela de 800x600
         return bulletBounds.x < 0 || bulletBounds.x > 800 || bulletBounds.y < 0 || bulletBounds.y > 600;
     }
 }

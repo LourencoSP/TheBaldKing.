@@ -5,31 +5,24 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Enemy {
     private Rectangle enemyBounds;
-    private float speed = 125; // Velocidade do inimigo
+    private float speed = 125;
 
     public Enemy(float x, float y) {
         enemyBounds = new Rectangle(x, y, 30, 30); // Tamanho do inimigo
     }
 
     public void update(float delta, float playerX, float playerY) {
-        // Calcula a diferença nas posições
         float dx = playerX - enemyBounds.x;
         float dy = playerY - enemyBounds.y;
-
-        // Calcula a magnitude da distância (hipotenusa)
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
-
-        // Normaliza a direção para que o movimento não seja afetado pela distância
         if (distance > 0) {
             dx /= distance;
             dy /= distance;
         }
-
-
         enemyBounds.x += dx * speed * delta;
         enemyBounds.y += dy * speed * delta;
 
-        // Verifica se o inimigo alcançou o jogador (distância mínima)
+        // Se estiver muito próximo, "prende" ao jogador
         if (distance < 5) {
             enemyBounds.x = playerX;
             enemyBounds.y = playerY;
