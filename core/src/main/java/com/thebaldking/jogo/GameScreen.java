@@ -8,15 +8,24 @@ import com.badlogic.gdx.utils.Array;
 import enemy.Enemy;
 
 import java.util.Iterator;
+import java.util.Locale;
 
 public class GameScreen implements Screen {
     private GameCore game;
     private Player player;
     private EnemyFactory enemyFactory;
     private Array<Enemy> enemies;
-    private float spawnTimer;
     private int score;
     private boolean gameOver;
+
+    //Variáveis de controle de tempo e dificuldade
+    private float spawnTimer;
+    private float spawnInterval = 2f;
+    private final float minSpawnInterval = 0.01f;
+    private final float difficultyIncreaseRate = 0.02f;
+
+    //Variável para o cronômetro de sobrevivência
+    private float survivalTime;
 
     public GameScreen(GameCore game) {
         this.game = game;
@@ -26,19 +35,27 @@ public class GameScreen implements Screen {
         spawnTimer = 0;
         score = 0;
         gameOver = false;
+        survivalTime = 0f; //Inicializa o tempo de sobrevivência
     }
 
     @Override
-    public void show() { }
+    public void show() {
+
+    }
 
     @Override
     public void render(float delta) {
+        //Lógica da tela de Game Over
         if (gameOver) {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             game.spriteBatch.begin();
-            game.font.draw(game.spriteBatch, "GAME OVER! Score: " + score, 300, 350);
-            game.font.draw(game.spriteBatch, "Pressione R para reiniciar", 300, 300);
+            //Formata o tempo para exibir minutos e segundos
+            String formattedTime = String.format(Locale.US, "%02d:%02d", (int) (survivalTime / 60), (int) (survivalTime % 60));
+            game.font.draw(game.spriteBatch, "GAME OVER!", 350, 400);
+            game.font.draw(game.spriteBatch, "Score: " + score, 350, 350);
+            game.font.draw(game.spriteBatch, "Tempo: " + formattedTime, 350, 325); // Exibe o tempo final
+            game.font.draw(game.spriteBatch, "Pressione R para reiniciar", 320, 280);
             game.spriteBatch.end();
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
@@ -47,26 +64,26 @@ public class GameScreen implements Screen {
             return;
         }
 
+        //Atualiza o tempo de sobrevivência a cada quadro
+        survivalTime += delta;
+
         Gdx.gl.glClearColor(0.94f, 0.9f, 0.55f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Atualiza o jogador
         player.update(delta);
 
-        // Gera inimigos periodicamente
         spawnTimer += delta;
-        if (spawnTimer > 1) {
+        if (spawnInterval > minSpawnInterval) {
+            spawnInterval -= delta * difficultyIncreaseRate;
+        }
+        if (spawnTimer >= spawnInterval) {
             enemies.add(enemyFactory.createEnemy(player.getBounds().x, player.getBounds().y));
             spawnTimer = 0;
         }
 
-        // Verifica colisões entre balas e inimigos
         checkBulletEnemyCollisions();
-
-        // Verifica colisão entre o jogador e inimigos (game over)
         checkPlayerEnemyCollision();
 
-        // Renderiza jogador e inimigos
         game.shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled);
         player.render(game.shapeRenderer);
         for (Enemy enemy : enemies) {
@@ -75,11 +92,17 @@ public class GameScreen implements Screen {
         }
         game.shapeRenderer.end();
 
-        // Exibe pontuação
+        //Exibe pontuação e o cronômetro na tela
         game.spriteBatch.begin();
         game.font.draw(game.spriteBatch, "Score: " + score, 10, Gdx.graphics.getHeight() - 10);
+
+        //Formata e exibe o tempo de sobrevivência no canto superior direito
+        String formattedTime = String.format(Locale.US, "%02d:%02d", (int) (survivalTime / 60), (int) (survivalTime % 60));
+        game.font.draw(game.spriteBatch, "Tempo: " + formattedTime, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 10);
+
         game.spriteBatch.end();
     }
+
 
     private void checkBulletEnemyCollisions() {
         Iterator<Bullet> bulletIterator = player.getBulletManager().getBullets().iterator();
@@ -102,7 +125,6 @@ public class GameScreen implements Screen {
         for (Enemy enemy : enemies) {
             if (player.getBounds().overlaps(enemy.getBounds())) {
                 gameOver = true;
-                // Salva a pontuação no banco de dados (em outra thread)
                 new Thread(() -> {
                     try {
                         DatabaseManager.saveScore(game.getPlayerName(), score);
