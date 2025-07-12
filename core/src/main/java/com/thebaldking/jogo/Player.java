@@ -16,13 +16,13 @@ public class Player {
     }
 
     public void update(float delta) {
-        // Movimentação com WASD
+
         if (Gdx.input.isKeyPressed(Input.Keys.W)) playerBounds.y += speed * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.S)) playerBounds.y -= speed * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.A)) playerBounds.x -= speed * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) playerBounds.x += speed * delta;
 
-        // Disparo com setas
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
             bulletManager.addBullet(new Bullet(playerBounds.x + 10, playerBounds.y + 30, 0, 300));
         if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
