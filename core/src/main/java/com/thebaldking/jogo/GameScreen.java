@@ -127,7 +127,7 @@ public class GameScreen implements Screen {
                 gameOver = true;
                 new Thread(() -> {
                     try {
-                        DatabaseManager.saveScore(game.getPlayerName(), score);
+                        DatabaseManager.saveScore(game.getPlayerName(), score, survivalTime);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
